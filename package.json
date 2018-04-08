@@ -7,10 +7,10 @@
     "test": "mocha"
   },
   "bin": {
-      "pkg": "index.js"
+    "pkg": "index.js"
   },
   "pkg": {
-      "scripts": "config.json"
+    "scripts": "config.json"
   },
   "repository": {
     "type": "git",
@@ -23,9 +23,12 @@
   },
   "homepage": "https://github.com/ssut/make-mi-air-purifier-great-again#readme",
   "dependencies": {
+    "logger": "0.0.1",
     "luxon": "^1.0.0",
     "miio": "^0.15.6",
-    "sleep-promise": "^2.0.0"
+    "sleep-promise": "^2.0.0",
+    "winston": "^2.4.1",
+    "winston-daily-rotate-file": "^3.0.1"
   },
   "devDependencies": {
     "chai": "^4.1.2",

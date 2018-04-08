@@ -1,3 +1,4 @@
+const logger = require('./logger.js');
 const sleep = require('sleep-promise');
 const miio = require('miio');
 const { EventEmitter } = require('events');
@@ -71,13 +72,27 @@ class Device extends EventEmitter {
     if (features.includes('led')) {
       this.polls.add('led');
     }
+    if (features.includes('power')) {
+
+      if(this.ref.matches('cap:power')) {
+                
+        this.ref.on('powerChanged', power => {
+          this.stats.power = power;
+          logger.info(`${this.name} _ change power _ ${power}`);
+        });
+        
+        this.stats.power = await this.ref.power();
+        logger.info(`${this.name} _ start power _ ${this.stats.power}`);
+      }
+
+    }
 
     if (this.isPolling === false) {
       // power = default
-      this.ref.on('power', power => {
-        this.stats.power = power;
-      });
-      this.stats.power = await this.ref.power();
+      // this.ref.on('power', power => {
+      //   this.stats.power = power;
+      // });
+      // this.stats.power = await this.ref.power();
 
       this.poll().then();
     }
@@ -106,7 +121,7 @@ class Device extends EventEmitter {
       }
 
       await Promise.all(promises);
-      console.info(String(new Date), `POWER [${this.stats.power}] LED [${this.stats.led}] PM2.5 [${this.stats.aqi}] MODE [${this.stats.mode}]`);
+      logger.info(`★ ${this.name} ★ POWER [${this.stats.power}] LED [${this.stats.led}] PM2.5 [${this.stats.aqi}] MODE [${this.stats.mode}]`);
       await sleep(this.pollingInterval);
     }
   }
@@ -121,7 +136,7 @@ class Device extends EventEmitter {
     }
 
     // need to pass manually
-    if (this.stats.power === false && feature !== 'power') {
+    if (this.stats.power === false) {
       return false;
     }
 
@@ -134,9 +149,9 @@ class Device extends EventEmitter {
       fn = this.setMode;
       break;
 
-      case 'power':
-      fn = this.setPower;
-      break;
+      // case 'power':
+      // fn = this.setPower;
+      // break;
 
       case 'led':
       fn = this.setLED;
@@ -146,7 +161,7 @@ class Device extends EventEmitter {
     if (fn !== undefined) {
       // pass with favorite levels because of slow updates
       if (feature !== 'mode' || feature === 'mode' && args[0] === 'favorite' && this.stats.mode !== 'favorite') {
-        console.info(String(new Date), 'updating', feature, 'to', ...args);
+        logger.info(`★ ${this.name} ★`, 'updating', feature, 'to', ...args);
       }
       await fn.bind(this)(...args);
     }
