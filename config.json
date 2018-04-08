@@ -1,0 +1,46 @@
+{
+    "discover": {
+        "enabled": false,
+        "mode": "great"
+    },
+    "modes": {
+        "great": {
+                "interval": 10000,
+                "power": {
+                    "default": true,
+                    "conditions": [
+                        
+                    ]
+                },
+                "led": {
+                    "default": true,
+                    "conditions": [
+                        { "action": [true], "times": "2300-0700" }
+                    ]
+                },
+                "mode": {
+                    "default": "auto",
+                    "conditions": [
+                        { "action": ["silent"], "aqi": "< 10" },
+                        { "action": ["silent"], "aqi": "< 20", "times": "0000-0800" },
+                        { "action": ["favorite", 1], "aqi": ">= 20"},
+                        { "action": ["favorite", 2], "aqi": ">= 30"},
+                        { "action": ["favorite", 3], "aqi": ">= 40"},
+                        { "action": ["favorite", 4], "aqi": ">= 50"},
+                        { "action": ["favorite", 5], "aqi": ">= 50", "times": "0900-2300" }                        
+                    ]
+                }
+            }
+    },
+    "devices": {
+        
+        "2": {
+            "ip": "192.168.0.9",
+            "mode": "great"
+        },
+        "1": {
+            "ip": "192.168.0.4",
+            "mode": "great"
+        }
+    }
+}
